@@ -1,35 +1,82 @@
+import os
 import streamlit as st
 import requests
 from geopy.geocoders import Nominatim
 from login import SessionManager
 
+def get_effective_api_key() -> str:
+    """
+    Returns the active Gemini API key automatically.
+    Prioritizes:
+    1. User manual input in SessionManager
+    2. OS Environment variable (GEMINI_API_KEY or GOOGLE_API_KEY)
+    3. Project .env file
+    4. Streamlit Secrets (.streamlit/secrets.toml)
+    """
+    user_key = SessionManager.get("google_api_key")
+    if user_key and len(user_key) > 10:
+        return user_key
+
+    env_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if env_key and len(env_key) > 10:
+        return env_key
+
+    if os.path.exists(".env"):
+        try:
+            with open(".env", "r") as f:
+                for line in f:
+                    if line.startswith("GEMINI_API_KEY=") or line.startswith("GOOGLE_API_KEY="):
+                        val = line.split("=", 1)[1].strip().strip('"').strip("'")
+                        if len(val) > 10:
+                            return val
+        except Exception:
+            pass
+
+    try:
+        if "GEMINI_API_KEY" in st.secrets and len(st.secrets["GEMINI_API_KEY"]) > 10:
+            return st.secrets["GEMINI_API_KEY"]
+        if "GOOGLE_API_KEY" in st.secrets and len(st.secrets["GOOGLE_API_KEY"]) > 10:
+            return st.secrets["GOOGLE_API_KEY"]
+    except Exception:
+        pass
+
+    return ""
+
+
 class APIKeyWidget:
     @staticmethod
     def render() -> str:
-        col1, col2 = st.columns([4, 1])
+        effective_key = get_effective_api_key()
+        manual_key = SessionManager.get("google_api_key") or ""
+        is_auto = bool(effective_key and not manual_key)
+
+        col1, col2 = st.columns([3.8, 1.2])
         with col1:
             key_input = st.text_input(
                 "🔑 Google Gemini API Key",
-                value=SessionManager.get("google_api_key") or "",
+                value=manual_key if manual_key else (effective_key if is_auto else ""),
                 type="password",
-                placeholder="Paste your API key here  (AIza...)",
-                help="Get your free key at aistudio.google.com → Get API Key",
+                placeholder="Auto-detected or paste key here (AIza...)",
+                help="Automatically loaded from .env, OS environment, or secrets.toml. Or paste key manually.",
                 key="api_key_input",
             )
             if key_input:
                 SessionManager.set("google_api_key", key_input)
+
         with col2:
-            saved_key = SessionManager.get("google_api_key")
-            if saved_key and len(saved_key) > 10:
-                st.success("✅ Saved")
+            if effective_key and len(effective_key) > 10:
+                if is_auto:
+                    st.success("⚡ Auto")
+                else:
+                    st.success("✅ Saved")
             else:
                 st.warning("⚠️ No key")
                 
         # Model Selection dropdown for quota flexibility
-        model_options = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
-        saved_model = SessionManager.get("google_api_model") or "gemini-2.0-flash"
+        model_options = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"]
+        saved_model = SessionManager.get("google_api_model") or "gemini-2.5-flash"
         if saved_model not in model_options:
-            saved_model = "gemini-2.0-flash"
+            saved_model = "gemini-2.5-flash"
             
         model_input = st.selectbox(
             "🤖 AI Model Selection",
@@ -40,7 +87,7 @@ class APIKeyWidget:
         )
         SessionManager.set("google_api_model", model_input)
         
-        return SessionManager.get("google_api_key") or ""
+        return effective_key
 
 
 class LocationAPI:
@@ -75,7 +122,10 @@ class AISummaryGenerator:
         return text.encode("latin-1", errors="replace").decode("latin-1")
 
     @staticmethod
-    def generate(data: dict, api_key: str) -> str:
+    def generate(data: dict, api_key: str = "") -> str:
+        if not api_key:
+            api_key = get_effective_api_key()
+
         val_date = data.get("f) Valuation date")
         rep_date = data.get("m) Date of report")
         parts    = data.get("q) Selected Property Parts", [])
@@ -118,9 +168,9 @@ class AISummaryGenerator:
         )
 
         if not api_key or len(api_key) < 10:
-            return "AI summary unavailable: No Google API key provided."
+            return "AI summary unavailable: No Google Gemini API key configured in .env or settings."
 
-        model = SessionManager.get("google_api_model") or "gemini-2.0-flash"
+        model = SessionManager.get("google_api_model") or "gemini-2.5-flash"
         url     = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         headers = {
             "Content-Type": "application/json",
@@ -133,22 +183,21 @@ class AISummaryGenerator:
 
         import time
         max_retries = 3
-        backoff_delay = 2  # initial delay in seconds
+        backoff_delay = 2
 
         for attempt in range(max_retries):
             try:
                 resp = requests.post(url, headers=headers, json=payload, timeout=30)
                 
-                # Check for 429 Rate Limit
                 if resp.status_code == 429:
                     if attempt < max_retries - 1:
                         time.sleep(backoff_delay)
-                        backoff_delay *= 2  # Double the delay
+                        backoff_delay *= 2
                         continue
                     else:
                         try:
                             err_msg = resp.json()["error"]["message"]
-                        except:
+                        except Exception:
                             err_msg = resp.text[:200]
                         return f"AI summary temporarily unavailable: Too many requests (API rate limited). Details: {err_msg}"
 
@@ -157,7 +206,7 @@ class AISummaryGenerator:
                 if resp.status_code == 400:
                     try:
                         err_msg = resp.json()["error"]["message"]
-                    except:
+                    except Exception:
                         err_msg = resp.text[:200]
                     return f"AI summary unavailable: Bad request. Details: {err_msg}"
                 

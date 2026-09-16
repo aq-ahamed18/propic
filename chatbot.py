@@ -36,8 +36,12 @@ class AIChatbot:
             unsafe_allow_html=True
         )
 
+        from ai_locationAPI import get_effective_api_key
+        if not api_key:
+            api_key = get_effective_api_key()
+
         if not api_key or len(api_key) < 10:
-            st.warning("⚠️ **Google Gemini API Key Required**: Please enter your API key in the sidebar workspace settings to activate the Chat Assistant.")
+            st.warning("⚠️ **Google Gemini API Key Required**: Please enter your API key in the sidebar settings or configure `GEMINI_API_KEY` in a `.env` file.")
             st.markdown("</div>", unsafe_allow_html=True)
             return
 
@@ -84,7 +88,7 @@ class AIChatbot:
         st.markdown("</div>", unsafe_allow_html=True)
 
     def _call_gemini_api(self, api_key: str, history: list) -> str:
-        model = SessionManager.get("google_api_model") or "gemini-2.0-flash"
+        model = SessionManager.get("google_api_model") or "gemini-2.5-flash"
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         headers = {
             "Content-Type": "application/json",

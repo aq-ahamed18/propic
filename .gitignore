@@ -1,0 +1,12 @@
+# Streamlit Secrets & Environment variables
+.streamlit/secrets.toml
+.env
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+
+# Generated Reports & Image Cache
+generated_reports/
+images/cache_standard/
+scratch/
