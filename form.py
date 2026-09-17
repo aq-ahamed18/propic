@@ -286,9 +286,17 @@ class ValuationForm:
         total  = len(important_keys)
         pct    = int((filled / total) * 100) if total > 0 else 0
         
-        col_pr1, col_pr2 = st.columns([5.5, 1])
-        with col_pr1:
-            st.progress(pct / 100)
-        with col_pr2:
-            st.markdown(f"<span style='color:#7A0016; font-weight:700; font-size:14px;'>{pct}% Complete</span>", unsafe_allow_html=True)
-        st.caption("Draft Completion Status (Essential survey parameters)")
+        st.markdown(
+            f"<div style='background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px 18px; margin-top: 10px;'>"
+            f"<div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;'>"
+            f"<span style='font-weight: 700; color: #1E293B; font-size: 13.5px;'>📊 Report Completion Progress ({filled}/{total} Parameters)</span>"
+            f"<span style='background: linear-gradient(135deg, #7A0016 0%, #9B111E 100%); color: white; font-weight: 800; font-size: 12.5px; padding: 3px 12px; border-radius: 20px; box-shadow: 0 2px 6px rgba(122,0,22,0.2);'>{pct}% Completed</span>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+        st.progress(pct / 100)
+        st.markdown(
+            "<span style='color: #64748B; font-size: 12px;'>Standardized survey fields required for PDF compiling</span>"
+            "</div>",
+            unsafe_allow_html=True
+        )

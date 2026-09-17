@@ -28,13 +28,27 @@ class AIChatbot:
 
     def render(self, api_key: str):
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">💬 PropIQ AI Chat Assistant</div>', unsafe_allow_html=True)
-        st.markdown(
-            "<p style='color:#64748B; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>"
-            "Draft valuation clauses, query IVS standards, or explore appraisal methodology with Gemini AI."
-            "</p>",
-            unsafe_allow_html=True
-        )
+        
+        active_model = SessionManager.get("google_api_model") or "gemini-2.5-flash"
+        
+        col_hdr1, col_hdr2 = st.columns([3, 1])
+        with col_hdr1:
+            st.markdown('<div class="section-title">💬 PropIQ AI Chat Assistant</div>', unsafe_allow_html=True)
+            st.markdown(
+                "<p style='color:#64748B; font-size: 14px; margin-top: -14px; margin-bottom: 20px;'>"
+                "Draft valuation clauses, query IVS standards, or explore appraisal methodology with Gemini AI."
+                "</p>",
+                unsafe_allow_html=True
+            )
+        with col_hdr2:
+            st.markdown(
+                f"<div style='text-align: right; margin-top: 4px;'>"
+                f"<span style='background: rgba(122,0,22,0.08); border: 1px solid rgba(122,0,22,0.2); color: #7A0016; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;'>"
+                f"🤖 {active_model}"
+                f"</span>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
 
         from ai_locationAPI import get_effective_api_key
         if not api_key:
@@ -60,12 +74,13 @@ class AIChatbot:
             if st.button("🔒 Standard Reservations Checklist", use_container_width=True):
                 prompt_to_send = "Provide a comprehensive checklist of standard assumptions, reservations, and limiting conditions for residential land valuation reports."
 
-        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
 
-        chat_container = st.container(height=460)
+        chat_container = st.container(height=480)
         with chat_container:
             for msg in st.session_state.chat_messages:
-                with st.chat_message(msg["role"]):
+                avatar = "🤖" if msg["role"] == "assistant" else "👤"
+                with st.chat_message(msg["role"], avatar=avatar):
                     st.markdown(msg["content"])
 
         user_input = st.chat_input("Ask PropIQ Assistant anything about valuation...")
@@ -76,7 +91,7 @@ class AIChatbot:
         if user_input:
             st.session_state.chat_messages.append({"role": "user", "content": user_input})
             with chat_container:
-                with st.chat_message("user"):
+                with st.chat_message("user", avatar="👤"):
                     st.markdown(user_input)
 
             with st.spinner("Synthesizing response with Gemini AI..."):

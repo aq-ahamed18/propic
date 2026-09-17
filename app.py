@@ -26,199 +26,350 @@ class UIRenderer:
     def inject_css():
         st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         
         html, body, [class*="css"] {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-            background-color: #f8fafc;
-            color: #1e293b;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            color: #0f172a;
+        }
+        
+        .stApp {
+            background-color: #f7f1f1 !important;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(122, 0, 22, 0.07) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 30%, rgba(122, 0, 22, 0.03) 0px, transparent 60%) !important;
+            background-attachment: fixed !important;
+        }
+
+        [data-testid="stAppViewContainer"] {
+            background: transparent !important;
+        }
+        
+        header[data-testid="stHeader"] {
+            background: transparent !important;
         }
         
         main .block-container {
-            padding-top: 1.2rem !important; 
-            padding-bottom: 2rem !important;
-            max-width: 1250px;
+            padding-top: 1.5rem !important; 
+            padding-bottom: 2.5rem !important;
+            max-width: 1280px;
         }
         
         /* Custom Institutional Header styling */
         .app-header {
-            background: linear-gradient(135deg, #7A0016 0%, #580010 100%);
-            padding: 26px 30px; 
-            border-radius: 14px;
+            background: linear-gradient(135deg, #4A000D 0%, #7A0016 45%, #9B111E 100%);
+            padding: 28px 36px; 
+            border-radius: 16px;
             text-align: left; 
-            box-shadow: 0 10px 25px -5px rgba(122, 0, 22, 0.25), 0 8px 10px -6px rgba(122, 0, 22, 0.1);
+            box-shadow: 0 14px 35px -5px rgba(122, 0, 22, 0.3), 0 6px 15px -4px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
             position: relative;
             overflow: hidden;
-            border-bottom: 3px solid #D4AF37;
+            border-bottom: 4px solid #D4AF37;
         }
         
         .app-header::before {
             content: ''; 
             position: absolute; 
-            top: -50%; right: -10%; 
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(255,255,255,0) 70%);
+            top: -60%; right: -8%; 
+            width: 360px; height: 360px;
+            background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .app-header::after {
+            content: ''; 
+            position: absolute; 
+            bottom: -50%; left: -10%; 
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
         
         .header-title-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            z-index: 2;
         }
         
         .header-text h1 {
             color: #ffffff; 
-            font-size: 32px; 
+            font-size: 34px; 
             font-weight: 800; 
             margin: 0; 
-            letter-spacing: -0.8px;
+            letter-spacing: -1px;
             line-height: 1.1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .header-text p {
             color: #fef3c7; 
             font-weight: 500; 
-            margin: 6px 0 0; 
-            font-size: 14.5px;
+            margin: 8px 0 0; 
+            font-size: 15px;
             letter-spacing: 0.1px;
+            opacity: 0.95;
+        }
+        
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
         }
         
         .header-badge {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 6px 14px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 7px 16px;
+            border-radius: 24px;
             color: #fef3c7;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-       
+        
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #a7f3d0;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+        
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+        }
+        
+        /* Executive Dashboard Stats Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 14px -2px rgba(0,0,0,0.03), 0 2px 6px -1px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.25s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px -4px rgba(122, 0, 22, 0.08);
+            border-color: #cbd5e1;
+        }
+        
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+            color: #7A0016;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 1px solid rgba(122, 0, 22, 0.1);
+            flex-shrink: 0;
+        }
+        
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+        
         /* Professional Card styling */
         .card {
             background: #ffffff;
-            border-radius: 14px;
-            padding: 26px;
-            box-shadow: 0 4px 16px -2px rgba(0,0,0,0.04), 0 2px 6px -1px rgba(0,0,0,0.02);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 6px 20px -3px rgba(0,0,0,0.04), 0 2px 8px -2px rgba(0,0,0,0.02);
             border: 1px solid #e2e8f0;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
         
         .section-title {
             color: #7A0016; 
-            font-size: 20px; 
-            font-weight: 700; 
-            margin-bottom: 18px;
-            letter-spacing: -0.4px;
+            font-size: 21px; 
+            font-weight: 800; 
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
             border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 8px;
+            padding-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 22px;
+            background: linear-gradient(180deg, #D4AF37 0%, #7A0016 100%);
+            border-radius: 4px;
         }
         
         label {
-            color: #334155 !important; 
+            color: #1e293b !important; 
             font-weight: 600 !important;
             font-size: 13.5px !important;
+            letter-spacing: -0.1px;
         }
         
         .stTextInput input, .stTextArea textarea, .stDateInput input, .stSelectbox select {
             background-color: #f8fafc !important; 
             border: 1px solid #cbd5e1 !important;
-            border-radius: 8px !important; 
+            border-radius: 10px !important; 
             color: #0f172a !important;
-            padding: 0.5rem 0.75rem !important;
-            transition: all 0.2s ease !important;
+            padding: 0.65rem 0.85rem !important;
+            font-size: 14px !important;
+            transition: all 0.25s ease !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset !important;
+        }
+        
+        .stTextInput input:hover, .stTextArea textarea:hover, .stDateInput input:hover {
+            border-color: #94a3b8 !important;
+            background-color: #ffffff !important;
         }
         
         .stTextInput input:focus, .stTextArea textarea:focus, .stDateInput input:focus {
             border-color: #7A0016 !important; 
-            box-shadow: 0 0 0 3px rgba(122, 0, 22, 0.12) !important;
+            box-shadow: 0 0 0 3.5px rgba(122, 0, 22, 0.12) !important;
             background-color: #ffffff !important;
         }
         
         .stButton > button {
-            background: linear-gradient(135deg, #7A0016, #9b0c24); 
+            background: linear-gradient(135deg, #7A0016 0%, #9B111E 50%, #580010 100%); 
             color: white !important;
-            border-radius: 8px; 
-            font-weight: 600;
-            padding: 0.55rem 1.3rem; 
+            border-radius: 10px; 
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0.65rem 1.4rem; 
             border: none;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(122, 0, 22, 0.15);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 16px rgba(122, 0, 22, 0.2);
+            letter-spacing: 0.2px;
         }
         
         .stButton > button:hover {
-            background: linear-gradient(135deg, #8c0a20, #b01b34); 
+            background: linear-gradient(135deg, #8c0a20 0%, #b01b34 50%, #680012 100%); 
             color: white !important; 
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(122, 0, 22, 0.22);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(122, 0, 22, 0.3);
+        }
+        
+        .stButton > button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(122, 0, 22, 0.2);
         }
         
         hr {
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(122, 0, 22, 0.15), transparent);
-            margin: 22px 0;
+            background: linear-gradient(90deg, transparent, rgba(122, 0, 22, 0.2), transparent);
+            margin: 24px 0;
         }
         
         .footer {
             text-align: center; 
             color: #64748b; 
             font-size: 13px; 
-            margin-top: 25px;
-            padding-bottom: 15px;
+            font-weight: 500;
+            margin-top: 30px;
+            padding-bottom: 20px;
         }
 
         /* Sidebar Styling */
         section[data-testid="stSidebar"] {
-            background-color: #ffffff;
-            border-right: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F5EAEB 100%) !important;
+            border-right: 1px solid rgba(122, 0, 22, 0.12) !important;
+            box-shadow: 2px 0 16px rgba(122, 0, 22, 0.04) !important;
         }
         
         /* Custom Streamlit Tabs Styling */
         div.stTabs [data-baseweb="tab-list"] {
-            gap: 8px;
+            gap: 10px;
             border-bottom: 2px solid #e2e8f0;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 2px;
         }
         div.stTabs [data-baseweb="tab"] {
-            height: 44px;
+            height: 46px;
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-bottom: none;
-            border-radius: 8px 8px 0px 0px;
+            border-radius: 10px 10px 0px 0px;
             color: #475569;
             font-weight: 600;
-            font-size: 13.5px;
-            padding: 8px 18px;
-            transition: all 0.2s ease;
+            font-size: 14px;
+            padding: 10px 22px;
+            transition: all 0.25s ease;
         }
         div.stTabs [data-baseweb="tab"]:hover {
             color: #7A0016;
             background-color: #f8fafc;
+            border-color: #cbd5e1;
         }
         div.stTabs [aria-selected="true"] {
-            background-color: #7A0016 !important;
+            background: linear-gradient(180deg, #7A0016 0%, #680012 100%) !important;
             color: #ffffff !important;
             border-color: #7A0016 !important;
+            box-shadow: 0 -4px 12px rgba(122, 0, 22, 0.15);
         }
         
         .report-card {
             background: #ffffff;
             border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 14px;
+            transition: all 0.25s ease;
         }
         .report-card:hover {
             border-color: #7A0016;
-            box-shadow: 0 4px 12px rgba(122, 0, 22, 0.08);
+            box-shadow: 0 6px 18px rgba(122, 0, 22, 0.09);
         }
         </style>
         """, unsafe_allow_html=True)
@@ -232,8 +383,13 @@ class UIRenderer:
                     <h1>PROPIQ</h1>
                     <p>Institutional Real Estate Valuation & Property Management System</p>
                 </div>
-                <div class="header-badge">
-                    USJP Department of EMV
+                <div class="header-right">
+                    <div class="header-badge">
+                        USJP Department of EMV
+                    </div>
+                    <div class="status-pill">
+                        <span class="status-dot"></span> Valuation Engine Active
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,13 +398,18 @@ class UIRenderer:
     @classmethod
     def render_sidebar(cls):
         with st.sidebar:
-            st.image(cls.LOGO_URL, width=105)
-            st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
+            st.markdown(
+                f"<div style='text-align: center; padding: 12px 0; background: linear-gradient(180deg, #FFF5F5 0%, #FFFFFF 100%); border-radius: 14px; border: 1px solid #FEE2E2; margin-bottom: 14px;'>"
+                f"<img src='{cls.LOGO_URL}' width='95' style='filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));'><br>"
+                f"<span style='font-size: 11px; font-weight: 700; color: #7A0016; letter-spacing: 0.8px; text-transform: uppercase;'>Univ. of Sri Jayewardenepura</span>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
             if SessionManager.get("logged_in"):
                 st.markdown(
-                    f"<div style='background-color:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px; font-size:13px; color:#1E293B;'>"
-                    f"👤 <strong>Chartered Surveyor</strong><br>"
-                    f"<span style='color:#64748B;'>User:</span> <strong>{SessionManager.get('username')}</strong>"
+                    f"<div style='background: linear-gradient(135deg, #F8FAFC 0%, #EDF2F7 100%); border: 1px solid #CBD5E1; border-radius: 12px; padding: 12px 14px; font-size: 13px; color: #1E293B; box-shadow: 0 2px 6px rgba(0,0,0,0.02);'>"
+                    f"🛡️ <strong>Chartered Valuation Surveyor</strong><br>"
+                    f"<span style='color: #64748B;'>Account:</span> <strong style='color: #7A0016;'>{SessionManager.get('username')}</strong>"
                     f"</div>", 
                     unsafe_allow_html=True
                 )
@@ -279,15 +440,61 @@ class DashboardPage:
 
     def render(self):
         username = SessionManager.get("username")
-        st.markdown(f"<h3 style='color:#7A0016; font-weight: 800; letter-spacing: -0.5px;'>Welcome, {username}! 👋</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='color:#64748b; font-size: 14.5px; margin-top: -10px; margin-bottom: 22px;'>Compile standardized valuation reports, manage saved projects, and converse with the survey assistant.</p>", unsafe_allow_html=True)
+        
+        # Count saved reports
+        os.makedirs("generated_reports", exist_ok=True)
+        reports_count = len([f for f in os.listdir("generated_reports") if f.endswith(".pdf")])
+        active_model = SessionManager.get("google_api_model") or "gemini-2.5-flash"
+        
+        st.markdown(
+            f"<div style='margin-bottom: 18px;'>"
+            f"<h3 style='color:#7A0016; font-weight: 800; letter-spacing: -0.6px; margin:0;'>Welcome back, {username}! 👋</h3>"
+            f"<p style='color:#64748b; font-size: 14.5px; margin-top: 4px; margin-bottom: 0;'>Compile standardized valuation reports, manage saved projects, and converse with the survey assistant.</p>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+        
+        # Executive Dashboard Quick Metrics Row
+        st.markdown(
+            f'<div class="stats-grid">'
+            f'  <div class="stat-card">'
+            f'      <div class="stat-icon">📄</div>'
+            f'      <div class="stat-content">'
+            f'          <div class="stat-label">Reports Compiled</div>'
+            f'          <div class="stat-value">{reports_count} PDF Documents</div>'
+            f'      </div>'
+            f'  </div>'
+            f'  <div class="stat-card">'
+            f'      <div class="stat-icon">🛡️</div>'
+            f'      <div class="stat-content">'
+            f'          <div class="stat-label">Active Surveyor</div>'
+            f'          <div class="stat-value">{username}</div>'
+            f'      </div>'
+            f'  </div>'
+            f'  <div class="stat-card">'
+            f'      <div class="stat-icon">⚡</div>'
+            f'      <div class="stat-content">'
+            f'          <div class="stat-label">AI Engine</div>'
+            f'          <div class="stat-value">{active_model}</div>'
+            f'      </div>'
+            f'  </div>'
+            f'  <div class="stat-card">'
+            f'      <div class="stat-icon">📜</div>'
+            f'      <div class="stat-content">'
+            f'          <div class="stat-label">Valuation Standard</div>'
+            f'          <div class="stat-value">IVS 104 Compliant</div>'
+            f'      </div>'
+            f'  </div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
         
         with st.sidebar:
-            st.markdown("### 🧭 Navigation")
+            st.markdown("### 🧭 Workspace Navigation")
             active_tab = st.radio(
-                "Go to Workspace:",
-                ["📁 Saved Reports", "✍️ Generate New Report", "💬 PropIQ AI Chat Assistant"],
-                index=1
+                "Select Module:",
+                ["✍️ Generate New Report", "📁 Saved Reports", "💬 PropIQ AI Chat Assistant"],
+                index=0
             )
             st.divider()
             

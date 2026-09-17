@@ -84,15 +84,23 @@ class AuthPage:
     def _render_login(self):
         col1, col2, col3 = st.columns([1, 2.2, 1])
         with col2:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown("<h3 style='color:#7A0016; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;'>🔐 Surveyor Portal Login</h3>", unsafe_allow_html=True)
-            st.markdown("<p style='color:#64748B; font-size:13.5px; margin-bottom: 22px;'>Department of Estate Management & Valuation — University of Sri Jayewardenepura</p>", unsafe_allow_html=True)
+            st.markdown(
+                '<div class="card" style="border-top: 4px solid #7A0016; box-shadow: 0 12px 32px -4px rgba(122,0,22,0.12);">'
+                '<div style="text-align: center; margin-bottom: 16px;">'
+                '<span style="background: rgba(122,0,22,0.08); color: #7A0016; font-weight: 700; font-size: 11.5px; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.8px; text-transform: uppercase;">'
+                '🏛️ Authorized Surveyor Portal'
+                '</span>'
+                '</div>'
+                '<h3 style="color:#7A0016; font-weight: 800; text-align: center; margin-bottom: 4px; letter-spacing: -0.6px;">Surveyor Sign-In</h3>'
+                '<p style="color:#64748B; font-size:13.5px; text-align: center; margin-bottom: 24px;">Department of Estate Management & Valuation — USJP</p>',
+                unsafe_allow_html=True
+            )
             
-            username = st.text_input("Username", placeholder="Enter your surveyor username", key="login_username")
-            password = st.text_input("Password", type="password", placeholder="Enter your password", key="login_password")
+            username = st.text_input("👤 Surveyor Username", placeholder="Enter your surveyor username", key="login_username")
+            password = st.text_input("🔑 Account Password", type="password", placeholder="Enter your password", key="login_password")
             
-            st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
-            if st.button("Authenticate & Access Workspace", use_container_width=True):
+            st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+            if st.button("🔓 Authenticate & Access Workspace", use_container_width=True):
                 if not username or not password:
                     st.error("Please enter both username and password!")
                 else:
@@ -107,9 +115,9 @@ class AuthPage:
             
             st.markdown("</div>", unsafe_allow_html=True)
             
-            st.markdown('<div style="text-align: center; margin-top: 15px;">', unsafe_allow_html=True)
+            st.markdown('<div style="text-align: center; margin-top: 18px;">', unsafe_allow_html=True)
             st.markdown("<span style='color:#64748B; font-size:13.5px;'>Need to register a new surveyor profile?</span>", unsafe_allow_html=True)
-            st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
             if st.button("🆕 Register New Surveyor Profile", use_container_width=True):
                 SessionManager.navigate("register")
             st.markdown("</div>", unsafe_allow_html=True)
@@ -117,16 +125,24 @@ class AuthPage:
     def _render_register(self):
         col1, col2, col3 = st.columns([1, 2.2, 1])
         with col2:
-            st.markdown('<div class="card">', unsafe_allow_html=True)
-            st.markdown("<h3 style='color:#7A0016; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;'>🆕 Surveyor Registration</h3>", unsafe_allow_html=True)
-            st.markdown("<p style='color:#64748B; font-size:13.5px; margin-bottom: 22px;'>Create your authorized credentials profile to begin.</p>", unsafe_allow_html=True)
+            st.markdown(
+                '<div class="card" style="border-top: 4px solid #D4AF37; box-shadow: 0 12px 32px -4px rgba(0,0,0,0.08);">'
+                '<div style="text-align: center; margin-bottom: 16px;">'
+                '<span style="background: rgba(212,175,55,0.15); color: #92400e; font-weight: 700; font-size: 11.5px; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.8px; text-transform: uppercase;">'
+                '📝 New Account Enrollment'
+                '</span>'
+                '</div>'
+                '<h3 style="color:#7A0016; font-weight: 800; text-align: center; margin-bottom: 4px; letter-spacing: -0.6px;">Surveyor Registration</h3>'
+                '<p style="color:#64748B; font-size:13.5px; text-align: center; margin-bottom: 24px;">Create your authorized credentials profile to begin.</p>',
+                unsafe_allow_html=True
+            )
             
-            username = st.text_input("Choose Username", placeholder="Choose a unique username", key="reg_username")
-            password = st.text_input("Choose Password", type="password", placeholder="Choose a secure password", key="reg_password")
-            confirm  = st.text_input("Confirm Password", type="password", placeholder="Re-enter password", key="reg_confirm_password")
+            username = st.text_input("👤 Choose Username", placeholder="Choose a unique username", key="reg_username")
+            password = st.text_input("🔑 Choose Password", type="password", placeholder="Choose a secure password", key="reg_password")
+            confirm  = st.text_input("🔒 Confirm Password", type="password", placeholder="Re-enter password", key="reg_confirm_password")
             
-            st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
-            if st.button("Register Account Profile", use_container_width=True):
+            st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+            if st.button("✨ Register Account Profile", use_container_width=True):
                 if password != confirm:
                     st.error("Passwords do not match!")
                 elif not username or not password:
@@ -141,7 +157,7 @@ class AuthPage:
                         
             st.markdown("</div>", unsafe_allow_html=True)
             
-            st.markdown('<div style="text-align: center; margin-top: 15px;">', unsafe_allow_html=True)
+            st.markdown('<div style="text-align: center; margin-top: 18px;">', unsafe_allow_html=True)
             if st.button("🔙 Back to Surveyor Login", use_container_width=True):
                 SessionManager.navigate("login")
             st.markdown("</div>", unsafe_allow_html=True)
